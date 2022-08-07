@@ -38,25 +38,44 @@ class UserTableSeeder extends Seeder
         ]);
 
         // Membuat Role
-        $role_admin = Role::create(['name' => 'admin']);
-        $role_user = Role::create(['name' => 'user']);
-        $role_member = Role::create(['name' => 'member']);
+        $role_admin = Role::create(['name' => 'Admin']);
+        $role_user = Role::create(['name' => 'User']);
+        $role_member = Role::create(['name' => 'Member']);
 
+        // Membuat Permission User
+        $user_access = Permission::create(['name' => 'user_access']);
+        $user_management_access = Permission::create(['name' => 'user_management_access']);
+        $user_create = Permission::create(['name' => 'user_create']);
+        $user_edit = Permission::create(['name' => 'user_edit']);
+        $user_show = Permission::create(['name' => 'user_show']);
+        $user_delete = Permission::create(['name' => 'user_delete']);
+
+        
+        // Membuat Permission Role
+        $role_access = Permission::create(['name' => 'role_access']);
+        $role_create = Permission::create(['name' => 'role_create']);
+        $role_edit = Permission::create(['name' => 'role_edit']);
+        $role_show = Permission::create(['name' => 'role_show']);
+        $role_delete = Permission::create(['name' => 'role_delete']);
+        
         // Membuat Permission
-        $permission_create = Permission::create(['name' => 'create user']);
-        $permission_read = Permission::create(['name' => 'read user']);
-        $permission_update = Permission::create(['name' => 'update user']);
-        $permission_delete = Permission::create(['name' => 'delete user']);
+        $permission_access = Permission::create(['name' => 'permission_access']);
+        $permission_read = Permission::create(['name' => 'permission_create']);
+        $permission_edit = Permission::create(['name' => 'permission_edit']);
+        $permission_show = Permission::create(['name' => 'permission_show']);
+        $permission_delete = Permission::create(['name' => 'permission_delete']);
 
         $admin->givePermissionTo([
-            $permission_create,
-            $permission_read,
-            $permission_update,
-            $permission_delete,
+            $user_management_access,
+            $user_create,
+            $user_edit,
+            $user_show,
+            $user_delete,
+            $user_access
         ]);
 
         $user->givePermissionTo([
-            $permission_read
+            $user_access,
         ]);
 
         $admin->assignRole($role_admin);
