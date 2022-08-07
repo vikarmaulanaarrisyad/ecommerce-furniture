@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\DataTables\UsersDataTable;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
+use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
 {
@@ -19,9 +20,8 @@ class UserController extends Controller
         if (!Gate::allows('user_access')) {
             abort(403, 'Cie Mau Ngapain tuh');
         }
-        
+
         return $dataTable->render('backend.admin.users.index');
-        // return view('backend.admin.users.index');
     }
 
     /**
