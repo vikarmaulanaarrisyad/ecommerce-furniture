@@ -54,12 +54,15 @@
                         </a>
 
                         <ul class="nav nav-treeview">
-                            <li class="nav-item">
-                                <a href="#" class="nav-link">
-                                    <i class="fas fa-unlock-alt nav-icon"></i>
-                                    <p>Permissions</p>
-                                </a>
-                            </li>
+                            @can('permission_access')
+                                <li class="nav-item">
+                                    <a href="#" class="nav-link">
+                                        <i class="fas fa-unlock-alt nav-icon"></i>
+                                        <p>Permissions</p>
+                                    </a>
+                                </li>
+                            @endcan
+
                             @can('role_access')
                                 <li class="nav-item">
                                     <a href="#" class="nav-link">

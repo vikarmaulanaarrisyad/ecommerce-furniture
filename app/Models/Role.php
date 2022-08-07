@@ -3,10 +3,9 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Spatie\Permission\Models\Role as RoleSpatie;
 
-class Menu extends Model
+class Role extends RoleSpatie
 {
     use HasFactory;
-
-    protected $table = 'menu';
 }

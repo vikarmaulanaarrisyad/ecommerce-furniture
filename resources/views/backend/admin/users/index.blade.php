@@ -10,15 +10,17 @@
 @section('content')
     <div class="row">
         <div class="col-lg-12">
-            <div class="card">
-                <div class="card-header">
-                    Header
+            <x-card>
+                <x-slot name="header">
+                    <button class="btn btn-primary"><i class="fas fa-plus-circle"></i> Tambah</button>
+                </x-slot>
+                <div class="dt-responsive table-responsive nowrap p-2">
+                    {{ $dataTable->table(['class' => 'table table-striped '], true) }}
                 </div>
-                <div class="card-body">
-                    <h5 class="card-title">Title</h5>
-                    <p class="card-text">Content</p>
-                </div>
-            </div>
+            </x-card>
         </div>
     </div>
+    <x-toast />
 @endsection
+
+@include('layouts.include.datatables')
