@@ -12,7 +12,8 @@
         <div class="col-lg-12">
             <x-card>
                 <x-slot name="header">
-                    <button class="btn btn-primary"><i class="fas fa-plus-circle"></i> Tambah</button>
+                    <button onclick="addForm(`{{ route('users.store') }}`)" class="btn btn-primary"><i
+                            class="fas fa-plus-circle"></i> Tambah</button>
                 </x-slot>
                 <div class="dt-responsive table-responsive nowrap p-2">
                     {{ $dataTable->table(['class' => 'table table-striped '], true) }}
@@ -20,7 +21,16 @@
             </x-card>
         </div>
     </div>
-    <x-toast />
+@include('backend.admin.users.modal-form')
 @endsection
 
 @include('layouts.include.datatables')
+<x-toast />
+
+@push('scripts')
+    <script>
+        function addForm(url) {
+            $('.modal').modal('show')
+        }
+    </script>
+@endpush
