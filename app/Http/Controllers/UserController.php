@@ -3,9 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\DataTables\UsersDataTable;
+use App\Models\Role;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
-use Spatie\Permission\Models\Role;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
+use Symfony\Component\HttpFoundation\Response;
 
 class UserController extends Controller
 {
@@ -16,12 +20,11 @@ class UserController extends Controller
      */
     public function index(UsersDataTable $dataTable)
     {
-        // $this->authorize('read user');
-        if (!Gate::allows('user_access')) {
-            abort(403, 'Cie Mau Ngapain tuh');
-        }
+        abort_if(Gate::denies('user_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        return $dataTable->render('backend.admin.users.index');
+        $roles = Role::all();
+
+        return $dataTable->render('backend.admin.users.index', compact('roles'));
     }
 
     /**
@@ -31,7 +34,7 @@ class UserController extends Controller
      */
     public function create()
     {
-        if (Gate::allows('user_create')) {
+        if (Gate::allows('user_access')) {
             return view('backend.admin.users.index');
         }
         abort(403, 'Cie Mau Ngapain tuh');
@@ -45,7 +48,30 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'name' => 'required',
+            'username' => 'required|unique:users,username,',
+            'email' => 'unique:users,email|required',
+            'password' => 'nullable',
+            'roles'     => 'required|array'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors(), 'message' => 'Gagal menyimpan data'],422);
+        }
+
+        $data = [
+            'name' => $request->name,
+            'username' => $request->username,
+            'email'     => $request->email,
+            'password'  => Hash::make('password'),
+        ];
+
+       $user = User::create($data);
+
+       $user->roles()->sync($request->input('roles', []));
+
+        return response()->json(['message' => 'Data berhasil disimpan']);
     }
 
     /**
@@ -56,10 +82,13 @@ class UserController extends Controller
      */
     public function show($id)
     {
-        if (Gate::allows('user_show')) {
-            return view('backend.admin.users.index');
+        if (!Gate::allows('user_show')) {
+            abort(403, 'Cie Mau Ngapain tuh');
         }
-        abort(403, 'Cie Mau Ngapain tuh');
+
+        $user = User::findOrfail($id);
+
+        return response()->json(['data'=>$user]);
     }
 
     /**
@@ -70,10 +99,9 @@ class UserController extends Controller
      */
     public function edit($id)
     {
-        if (Gate::allows('user_edit')) {
-            return view('backend.admin.users.index');
-        }
-        abort(403, 'Cie Mau Ngapain tuh');
+        abort_if(Gate::denies('user_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+
+        return view('backend.admin.users.index');
     }
 
     /**
@@ -85,7 +113,26 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'name' => 'required',
+            'username' => 'required|unique:users,username,'.$id,
+            'email' => 'required|unique:users,email,'.$id,
+            'password' => 'nullable',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors(), 'message' => 'Gagal menyimpan data'],422);
+        }
+
+        $data = [
+            'name' => $request->name,
+            'username' => $request->username,
+            'email'     => $request->email,
+        ];
+
+      User::where('id', $id)->update($data);
+        
+      return response()->json(['message' => 'Data berhasil diubah']);
     }
 
     /**
@@ -96,9 +143,16 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
-        if (Gate::allows('user_delete')) {
-            return view('backend.admin.users.index');
+        abort_if(Gate::denies('user_delete'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+
+        $user = User::findOrfail($id);
+
+        if ($user->id == auth()->user()->id) {
+             return response()->json(['message' => 'Gagal menghapus data'],403);
         }
-        abort(403, 'Cie Mau Ngapain tuh');
+
+        $user->delete();
+
+        return response()->json(['message' => 'Data berhasil dihapus']);
     }
 }

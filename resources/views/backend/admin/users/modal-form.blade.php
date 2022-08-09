@@ -3,6 +3,7 @@
             Tambah
         </x-slot>
 
+        @method('POST')
         <div class="row">
             <div class="col-lg-6">
                 <div class="form-group">
@@ -29,15 +30,18 @@
             </div>
             <div class="col-lg-6">
                 <div class="form-group">
-                    <label for="password">password</label>
-                    <input type="password" name="password" id="password" class="form-control" autocomplete="off"
-                        required placeholder="Password">
+                    <label for="roles">Roles</label>
+                    <select name="roles[]" id="roles" multiple required class="form-control select2">
+                       @foreach ($roles as $id => $role)
+                           <option value="{{ $role->id }} {{ in_array($role->id, old('roles', [])) ? 'selected' : '' }}">{{ $role->title }}</option>
+                       @endforeach
+                    </select>
                 </div>
             </div>
         </div>
 
         <x-slot name="footer">
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-primary">Simpan</button>
+            <button type="button" onclick="submitForm(this.form)" class="btn btn-primary">Simpan</button>
         </x-slot>
     </x-modal>

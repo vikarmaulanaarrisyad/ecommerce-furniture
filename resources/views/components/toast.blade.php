@@ -1,4 +1,4 @@
-@push('scripts')
+{{--  @push('scripts')
     @if (session()->has('success'))
         <script>
             var Toast = Swal.mixin({
@@ -30,7 +30,7 @@
         </script>
     @endif
 
-@endpush
+@endpush  --}}
 
 @push('scripts_vendor')
     <!-- SweetAlert2 -->
