@@ -13,9 +13,11 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->string('username')->after('email')->unique()->nullable();
-            $table->string('path_image')->nullable();
+        Schema::create('permissions', function (Blueprint $table) {
+            $table->id();
+            $table->string('title')->nullable();
+            $table->timestamps();
+            $table->softDeletes();
         });
     }
 
@@ -26,10 +28,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn([
-                'username','path_image'
-            ]);
-        });
+        Schema::dropIfExists('permissions');
     }
 };

@@ -25,7 +25,7 @@ class MenuTableSeeder extends Seeder
         $menu_management_user = Menu::create([
             'nama_menu' => 'Management User',
             'icons'     => 'fa-users',
-            'url'       => '#',
+            'url'       => 'admin/users',
             'sort'     => 2
         ]);
     }

@@ -21,12 +21,6 @@ class UsersDataTable extends DataTable
      * @param QueryBuilder $query Results from query() method.
      * @return \Yajra\DataTables\EloquentDataTable
      */
-    // public function dataTable(QueryBuilder $query): EloquentDataTable
-    // {
-    //     return (new EloquentDataTable($query))
-    //         ->addColumn('action', 'users.action')
-    //         ->setRowId('id');
-    // }
 
     public function dataTable($query)
     {
@@ -34,19 +28,23 @@ class UsersDataTable extends DataTable
             ->eloquent($query)
             ->addIndexColumn()
             ->editColumn('created_at', function ($row) {
-                return $row->created_at->format('Y-m-d');
+                    return $row->created_at->format('Y-m-d');
             })
             ->editColumn('updated_at', function ($row) {
                 return $row->updated_at->format('Y-m-d');
             })
             ->addColumn('action', function ($row) {
-                if (Gate::allows('user_update') || Gate::allows('user_access')) {
-                    $action = '<button type="button" data-id=' . $row->id . ' data-jenis="edit"  class="btn btn-sm bg-primary action"><i class="fas fa-pencil-alt"></i></button>
+                
+                if (Gate::allows('permission_edit') || Gate::allows('permission_show')) {
+                    $action = '<button onclick="editForm(`'.route('users.show', $row->id).'`)" data-id=' . $row->id . ' data-jenis="edit"  class="btn btn-sm bg-primary action"><i class="fas fa-pencil-alt"></i></button>
                     ';
                 }
 
-                if (Gate::allows('user_delete')) {
-                    $action .= ' <button type="button" data-id=' . $row->id . ' data-jenis="delete" class="btn btn-sm bg-danger action"><i class="fas fa-trash-alt"></i></button>';
+
+                if (Gate::allows('permission_delete')) {
+                    if ($row->id != auth()->user()->id) {
+                        $action .= ' <button onclick="deleteData(`'.route('users.destroy', $row->id).'`)" data-id=' . $row->name . '  data-nama=' . $row->name . ' data-jenis="delete" class="btn btn-sm bg-danger action"><i class="fas fa-trash-alt"></i></button>';
+                    }
                 }
                 return $action;
             });
@@ -61,7 +59,9 @@ class UsersDataTable extends DataTable
     public function query(User $model): QueryBuilder
     {
         
-        return $model->role('User')->newQuery(); // memanggil relasi di spatie
+        // return $model->role('User')->newQuery(); // memanggil relasi di spatie
+        // return $model->role('User')->newQuery(); 
+        return $model->newQuery();
     }
 
     /**

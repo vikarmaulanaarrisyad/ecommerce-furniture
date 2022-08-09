@@ -4,7 +4,8 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{ config('app.name') }} | Dashboard</title>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>{{ config('app.name') }} | @yield('title')</title>
 
     <!-- Google Font: Source Sans Pro -->
     <link rel="stylesheet"
@@ -21,11 +22,15 @@
     <link rel="stylesheet" href="{{ asset('AdminLTE') }}/plugins/overlayScrollbars/css/OverlayScrollbars.min.css">
     <!-- Daterange picker -->
     {{-- <link rel="stylesheet" href="{{ asset('AdminLTE') }}/plugins/daterangepicker/daterangepicker.css"> --}}
+    
+<link rel="stylesheet" href="{{ asset('AdminLTE/plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css') }}">
+
+<link rel="stylesheet" href="{{ asset('AdminLTE/plugins/toastr/toastr.min.css') }}">
 
     @stack('css_vendor')
 
     <!-- Theme style -->
-    <link rel="stylesheet" href="{{ asset('AdminLTE') }}/dist/css/adminlte.min.css">
+    <link rel="stylesheet" href="{{ asset('AdminLTE/dist/css/adminlte.min.css') }}">
 
     @stack('css')
 </head>
@@ -115,21 +120,24 @@
     {{-- <script src="{{ asset('AdminLTE') }}/plugins/daterangepicker/daterangepicker.js"></script> --}}
     <!-- overlayScrollbars -->
     <script src="{{ asset('AdminLTE') }}/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>
+    <!-- SweetAlert2 -->
+    <script src="{{ asset('AdminLTE/plugins/sweetalert2/sweetalert2.min.js') }}"></script>
+    <!-- Toastr -->
+    <script src="{{ asset('AdminLTE/plugins/toastr/toastr.min.js') }}"></script>
 
     @stack('scripts_vendor')
 
     <!-- AdminLTE App -->
-    <script src="{{ asset('AdminLTE') }}/dist/js/adminlte.js"></script>
+    <script src="{{ asset('AdminLTE/dist/js/adminlte.js') }}"></script>
+    <script src="{{ asset('js/vikar.js') }}"></script>
 
     <script>
-        $('.custome-file-input').on('change', function() {
-            let filename = $(this).val().split('\\').pop();
-            $(this).text('.custom-file-label').addClass('selected').html(filename);
-        })
-
-        function preview(targer, image) {
-            $(targer).attr('src', window.URL.createObjectURL(image)).show();
-        }
+        var swal = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000
+        });
     </script>
     @stack('scripts')
 </body>

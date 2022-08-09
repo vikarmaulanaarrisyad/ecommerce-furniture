@@ -21,26 +21,17 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-// Route::middleware([
-//     'auth:sanctum',
-//     config('jetstream.auth_session'),
-//     'verified'
-// ])->group(function () {
-//     Route::get('/dashboard', function () {
-//         return view('dashboard');
-//     })->name('dashboard');
-// });
-
 Route::group([
-    'middleware' => ['auth', 'role:Admin|User|Member']
+    'middleware' => ['auth', 'role:Admin,User']
 ], function () {
     Route::get('/dashboard',[DashboardController::class, 'index'])->name('dashboard');
 
     // Route Admin
     Route::group([
-        'middleware' => 'role:Admin'
+        'middleware' => 'role:Admin',
+        'prefix'    => 'admin'
     ], function () {
-        Route::resource('/users', UserController::class);
+        Route::resource('users', UserController::class);
     });
 
     // Route Users
